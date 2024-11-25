@@ -5,4 +5,5 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Lab3 src/main.cpp
         src/LinkedList.h
+        src/DoubleLinkedList.h
 )
