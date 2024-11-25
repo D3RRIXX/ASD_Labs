@@ -44,29 +44,18 @@ typename LinkedList<T>::Node* LinkedList<T>::InsertAfter(T value, Node* node)
 {
 	auto newNode = new Node(value);
 
-	if (node == nullptr)
+	if (node != nullptr)
+	{
+		node->Next = newNode;
+	}
+	else
 	{
 		if (_head != nullptr)
 			newNode->Next = _head;
 
 		_head = newNode;
-		return newNode;
 	}
-
-	Node* current = _head;
-	while (current->Next != nullptr)
-	{
-		if (current == node)
-		{
-			newNode->Next = current->Next;
-			current->Next = newNode;
-			return newNode;
-		}
-
-		current = current->Next;
-	}
-
-	throw std::runtime_error("LinkedList::InsertAfter: Node not found");
+	return newNode;
 }
 
 template<typename T>
