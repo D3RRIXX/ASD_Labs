@@ -31,7 +31,7 @@ private:
 	Node* _head = nullptr;
 
 public:
-	Node* InsertAfter(T value, Node* node = nullptr);
+	Node* InsertAfter(T&& value, Node* node = nullptr);
 	void RemoveAfter(Node* node);
 	void AssertNoLoops() const;
 	FindNodeResult Find(T value) const;
@@ -40,9 +40,10 @@ public:
 };
 
 template<typename T>
-typename LinkedList<T>::Node* LinkedList<T>::InsertAfter(T value, Node* node)
+typename LinkedList<T>::Node* LinkedList<T>::InsertAfter(T&& value, Node* node)
 {
-	auto newNode = new Node(value);
+	auto newNode = new Node(std::forward<T>(value));
+	value = T();
 
 	if (node != nullptr)
 	{
@@ -83,8 +84,7 @@ void LinkedList<T>::AssertNoLoops() const
 		slow = slow->Next;
 		fast = fast->Next;
 
-		if (slow == fast)
-			throw std::runtime_error("LinkedList::AssertNoLoops: Loop Detected");
+		assert(slow != fast);
 	}
 }
 

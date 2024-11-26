@@ -4,6 +4,7 @@
 
 #ifndef DOUBLELINKEDLIST_H
 #define DOUBLELINKEDLIST_H
+#include <assert.h>
 #include <stdexcept>
 
 template<typename T>
@@ -26,17 +27,17 @@ private:
 public:
 	DoubleLinkedList() : _head(nullptr), _tail(nullptr) {}
 
-	Node* InsertAfter(const T& value, Node* node = nullptr);
-	Node* InsertBefore(const T& value, Node* node = nullptr);
+	Node* InsertAfter(T&& value, Node* node = nullptr);
+	Node* InsertBefore(T&& value, Node* node = nullptr);
 	Node* Find(const T& value) const;
 	void Remove(Node* node);
 	void AssertNoLoops() const;
 };
 
 template<typename T>
-typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::InsertAfter(const T& value, Node* node)
+typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::InsertAfter(T&& value, Node* node)
 {
-	Node* newNode = new Node(value);
+	Node* newNode = new Node(std::forward<T>(value));
 	if (_head == nullptr)
 		_head = newNode;
 
@@ -67,9 +68,9 @@ typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::InsertAfter(const T& va
 }
 
 template<typename T>
-typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::InsertBefore(const T& value, Node* node)
+typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::InsertBefore(T&& value, Node* node)
 {
-	Node* newNode = new Node(value);
+	Node* newNode = new Node(std::forward<T>(value));
 	if (_head == nullptr)
 		_head = newNode;
 
@@ -120,8 +121,8 @@ typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::Find(const T& value) co
 template<typename T>
 void DoubleLinkedList<T>::Remove(Node* node)
 {
-	if (_head == nullptr || node == nullptr)
-		return;
+	assert(_head != nullptr);
+	assert(node != nullptr);
 
 	if (node == _head)
 	{
