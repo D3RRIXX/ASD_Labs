@@ -29,6 +29,7 @@ public:
 
 private:
 	Node* _head = nullptr;
+	int _count = 0;
 
 public:
 	Node* InsertAfter(T&& value, Node* node = nullptr);
@@ -37,6 +38,7 @@ public:
 	FindNodeResult Find(T value) const;
 
 	Node* GetHead() const { return _head; }
+	[[nodiscard]] int GetCount() const { return _count; }
 };
 
 template<typename T>
@@ -44,6 +46,7 @@ typename LinkedList<T>::Node* LinkedList<T>::InsertAfter(T&& value, Node* node)
 {
 	auto newNode = new Node(std::forward<T>(value));
 	value = T();
+	_count++;
 
 	if (node != nullptr)
 	{
@@ -62,11 +65,19 @@ typename LinkedList<T>::Node* LinkedList<T>::InsertAfter(T&& value, Node* node)
 template<typename T>
 void LinkedList<T>::RemoveAfter(Node* node)
 {
-	Node* toRemove = node->Next;
+	assert(_head != nullptr);
+
+	Node* toRemove = node != nullptr ? node->Next : _head;
 	if (toRemove == nullptr)
 		return;
 
-	node->Next = toRemove->Next;
+	_count--;
+
+	if (node != nullptr)
+		node->Next = toRemove->Next;
+	else
+		_head = toRemove->Next;
+
 	delete toRemove;
 }
 
@@ -76,15 +87,13 @@ void LinkedList<T>::AssertNoLoops() const
 	if (_head == nullptr)
 		return;
 
-	Node* slow = _head;
-	Node* fast = _head;
-
-	while (fast != nullptr && fast->Next != nullptr)
+	Node* current = _head;
+	int count = 0;
+	while (current != nullptr)
 	{
-		slow = slow->Next;
-		fast = fast->Next;
-
-		assert(slow != fast);
+		count++;
+		assert(count <= _count);
+		current = current->Next;
 	}
 }
 

@@ -23,15 +23,20 @@ public:
 private:
 	Node* _head;
 	Node* _tail;
+	int _count;
 
 public:
-	DoubleLinkedList() : _head(nullptr), _tail(nullptr) {}
+	DoubleLinkedList() : _head(nullptr), _tail(nullptr), _count(0) {}
 
 	Node* InsertAfter(T&& value, Node* node = nullptr);
 	Node* InsertBefore(T&& value, Node* node = nullptr);
 	Node* Find(const T& value) const;
 	void Remove(Node* node);
 	void AssertNoLoops() const;
+
+	[[nodiscard]] int GetCount() const { return _count; }
+	Node* GetHead() { return _head; }
+	Node* GetTail() { return _tail; }
 };
 
 template<typename T>
@@ -64,6 +69,7 @@ typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::InsertAfter(T&& value, 
 	if (node == _tail)
 		_tail = newNode;
 
+	_count++;
 	return newNode;
 }
 
@@ -97,6 +103,7 @@ typename DoubleLinkedList<T>::Node* DoubleLinkedList<T>::InsertBefore(T&& value,
 	if (node == _head)
 		_head = newNode;
 
+	_count++;
 	return newNode;
 }
 
@@ -143,6 +150,7 @@ void DoubleLinkedList<T>::Remove(Node* node)
 	if (nextNode != nullptr)
 		nextNode->Previous = previousNode;
 
+	_count--;
 	delete node;
 }
 
@@ -152,16 +160,13 @@ void DoubleLinkedList<T>::AssertNoLoops() const
 	if (_head == nullptr)
 		return;
 
-	Node* slow = _head;
-	Node* fast = _head;
-
-	while (fast != nullptr && fast->Next != nullptr)
+	Node* current = _head;
+	int count = 0;
+	while (current != nullptr)
 	{
-		slow = slow->Next;
-		fast = fast->Next;
-
-		if (slow == fast)
-			throw std::runtime_error("DoubleLinkedList::AssertNoLoops: Loop Detected");
+		count++;
+		assert(count <= _count);
+		current = current->Next;
 	}
 }
 
