@@ -13,7 +13,7 @@ public:
 	struct Node
 	{
 		T Value;
-		Node* Next = nullptr;
+		Node* Next;
 
 		explicit Node(T value) : Value(value), Next(nullptr) {}
 	};
@@ -61,15 +61,12 @@ typename LinkedList<T>::Node* LinkedList<T>::InsertAfter(T value, Node* node)
 template<typename T>
 void LinkedList<T>::RemoveAfter(Node* node)
 {
-	Node* current = node->Next;
-	while (current != nullptr)
-	{
-		Node* next = current->Next;
-		delete current;
-		current = next;
-	}
+	Node* toRemove = node->Next;
+	if (toRemove == nullptr)
+		return;
 
-	node->Next = nullptr;
+	node->Next = toRemove->Next;
+	delete toRemove;
 }
 
 template<typename T>
