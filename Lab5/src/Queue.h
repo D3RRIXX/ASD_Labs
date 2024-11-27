@@ -24,6 +24,7 @@ public:
 
 	void Enqueue(T&& value);
 	T Dequeue();
+	T* Front();
 	bool TryDequeue(T& outValue);
 };
 
@@ -53,6 +54,12 @@ T Queue<T>::Dequeue()
 	delete currentHead;
 
 	return value;
+}
+
+template<typename T>
+T* Queue<T>::Front()
+{
+	return IsEmpty() ? nullptr : &_head->Value;
 }
 
 template<typename T>
